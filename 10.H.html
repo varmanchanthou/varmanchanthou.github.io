@@ -1,0 +1,1871 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Class 10H Memory Vault | ទំព័រស្នាមញញឹម 10H</title>
+  
+  <!-- Fonts: Kantumruy Pro (Khmer) & Poppins (English) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       1. CSS VARIABLES & THEME SYSTEM
+       ========================================================================== */
+    :root {
+      --primary-color: #ff6b6b;
+      --primary-hover: #ff4757;
+      --secondary-color: #4ecdc4;
+      --accent-color: #ffe66d;
+      --purple-accent: #6c5ce7;
+      --dark-bg: #0f111a;
+      --card-bg-dark: #1a1d2e;
+      --light-bg: #f8f9fa;
+      --card-bg-light: #ffffff;
+      --text-dark: #2d3436;
+      --text-muted: #636e72;
+      --text-light: #f1f2f6;
+      --border-radius-lg: 20px;
+      --border-radius-md: 12px;
+      --border-radius-sm: 8px;
+      --transition-fast: 0.2s ease;
+      --transition-normal: 0.4s ease;
+      --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      --box-shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.15);
+    }
+
+    /* ==========================================================================
+       2. RESET & BASE STYLES
+       ========================================================================== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      font-family: 'Kantumruy Pro', 'Poppins', sans-serif;
+      background-color: var(--light-bg);
+      color: var(--text-dark);
+      line-height: 1.8;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      outline: none;
+    }
+
+    /* Floating particles background canvas */
+    #particle-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.4;
+    }
+
+    /* ==========================================================================
+       3. NAVIGATION BAR & CONTROLS
+       ========================================================================== */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 75px;
+      background: rgba(15, 17, 26, 0.92);
+      backdrop-filter: blur(12px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 2rem;
+      z-index: 1000;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #fff;
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .brand-logo span {
+      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-menu {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      list-style: none;
+    }
+
+    .nav-btn {
+      padding: 0.5rem 1rem;
+      border-radius: var(--border-radius-sm);
+      background: transparent;
+      color: rgba(255, 255, 255, 0.8);
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: var(--transition-fast);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-btn:hover, .nav-btn.active {
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+    }
+
+    .nav-btn.active {
+      border-bottom: 3px solid var(--primary-color);
+    }
+
+    .control-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-lang {
+      background: linear-gradient(135deg, var(--secondary-color), #2abbb4);
+      color: #fff;
+      padding: 0.5rem 1.1rem;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
+      transition: var(--transition-fast);
+    }
+
+    .btn-lang:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(78, 205, 196, 0.5);
+    }
+
+    /* Mobile Menu Toggle */
+    .mobile-toggle {
+      display: none;
+      background: transparent;
+      color: #fff;
+      font-size: 1.8rem;
+    }
+
+    /* ==========================================================================
+       4. PAGE CONTAINER & NAVIGATION SYSTEM (SPA)
+       ========================================================================== */
+    .page-wrapper {
+      position: relative;
+      z-index: 2;
+      margin-top: 75px;
+      min-height: calc(100vh - 75px);
+    }
+
+    .page {
+      display: none;
+      padding: 3rem 1.5rem 6rem;
+      animation: fadeIn 0.5s ease-in-out forwards;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Page Navigation Footer Controller */
+    .page-controller {
+      max-width: 900px;
+      margin: 3rem auto 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 2rem;
+      border-top: 1px solid #e0e0e0;
+    }
+
+    .btn-nav-action {
+      padding: 0.8rem 1.8rem;
+      border-radius: 30px;
+      background: var(--dark-bg);
+      color: #fff;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: var(--transition-fast);
+    }
+
+    .btn-nav-action:hover {
+      background: var(--purple-accent);
+      transform: translateY(-2px);
+    }
+
+    .btn-nav-action:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* ==========================================================================
+       5. PAGE 1: HERO & HOME
+       ========================================================================== */
+    .hero-banner {
+      background: linear-gradient(135deg, rgba(15,17,26,0.9), rgba(26,29,46,0.92)),
+                  url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1500&q=80') center/cover;
+      border-radius: var(--border-radius-lg);
+      padding: 5rem 2rem;
+      color: #fff;
+      text-align: center;
+      box-shadow: var(--box-shadow);
+      margin-bottom: 3rem;
+    }
+
+    .hero-banner h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+
+    .hero-banner p {
+      font-size: 1.25rem;
+      max-width: 750px;
+      margin: 0 auto 2.5rem;
+      opacity: 0.9;
+    }
+
+    .hero-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(10px);
+      padding: 1.5rem;
+      border-radius: var(--border-radius-md);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      text-align: center;
+    }
+
+    .stat-card h3 {
+      font-size: 2.2rem;
+      color: var(--accent-color);
+      margin-bottom: 0.2rem;
+    }
+
+    .stat-card p {
+      font-size: 0.9rem;
+      opacity: 0.8;
+      margin: 0;
+    }
+
+    .quick-intro-box {
+      background: #fff;
+      padding: 2.5rem;
+      border-radius: var(--border-radius-lg);
+      box-shadow: var(--box-shadow);
+      margin-bottom: 2rem;
+    }
+
+    /* Quote Ticker */
+    .ticker-wrap {
+      background: var(--dark-bg);
+      color: #fff;
+      padding: 1rem;
+      border-radius: var(--border-radius-md);
+      overflow: hidden;
+      white-space: nowrap;
+      margin-top: 2rem;
+    }
+
+    .ticker-move {
+      display: inline-block;
+      animation: ticker 35s linear infinite;
+    }
+
+    .ticker-item {
+      display: inline-block;
+      padding: 0 2rem;
+      font-size: 0.95rem;
+      color: var(--accent-color);
+    }
+
+    @keyframes ticker {
+      0% { transform: translate3d(0, 0, 0); }
+      100% { transform: translate3d(-50%, 0, 0); }
+    }
+
+    /* ==========================================================================
+       6. PAGE 2: TIMELINE & MEMORY STORIES
+       ========================================================================== */
+    .section-title {
+      text-align: center;
+      font-size: 2.2rem;
+      margin-bottom: 2.5rem;
+      color: var(--dark-bg);
+      position: relative;
+    }
+
+    .section-title::after {
+      content: '';
+      width: 70px;
+      height: 4px;
+      background: var(--primary-color);
+      display: block;
+      margin: 0.5rem auto 0;
+      border-radius: 2px;
+    }
+
+    .timeline {
+      position: relative;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem 0;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 4px;
+      background: #e2e8f0;
+      transform: translateX(-50%);
+    }
+
+    .timeline-item {
+      margin-bottom: 3rem;
+      position: relative;
+      width: 50%;
+      padding: 0 2.5rem;
+    }
+
+    .timeline-item.left {
+      left: 0;
+      text-align: right;
+    }
+
+    .timeline-item.right {
+      left: 50%;
+      text-align: left;
+    }
+
+    .timeline-icon {
+      position: absolute;
+      top: 0;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: var(--primary-color);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      box-shadow: 0 0 0 4px #fff, 0 4px 10px rgba(0,0,0,0.15);
+      z-index: 5;
+    }
+
+    .left .timeline-icon { right: -22.5px; }
+    .right .timeline-icon { left: -22.5px; }
+
+    .timeline-content {
+      background: #fff;
+      padding: 1.8rem;
+      border-radius: var(--border-radius-md);
+      box-shadow: var(--box-shadow);
+      border-top: 4px solid var(--secondary-color);
+    }
+
+    .timeline-date {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .timeline-content h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.8rem;
+      color: var(--dark-bg);
+    }
+
+    /* Memory Category Pills */
+    .tag {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-bottom: 0.8rem;
+    }
+
+    .tag-funny { background: #fff3bf; color: #d9480f; }
+    .tag-normal { background: #e7f5ff; color: #1971c2; }
+    .tag-emotional { background: #ffe3e3; color: #c92a2a; }
+
+    /* ==========================================================================
+       7. PAGE 3: PHOTO VAULT (24 CARDS WITH MODAL)
+       ========================================================================== */
+    .gallery-filter-bar {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 2.5rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 0.6rem 1.4rem;
+      border-radius: 25px;
+      background: #e9ecef;
+      color: var(--text-dark);
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: var(--transition-fast);
+    }
+
+    .filter-btn.active, .filter-btn:hover {
+      background: var(--dark-bg);
+      color: #fff;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .photo-card {
+      background: #fff;
+      border-radius: var(--border-radius-md);
+      overflow: hidden;
+      box-shadow: var(--box-shadow);
+      transition: var(--transition-normal);
+      cursor: pointer;
+      position: relative;
+    }
+
+    .photo-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--box-shadow-hover);
+    }
+
+    .photo-thumb-container {
+      width: 100%;
+      height: 200px;
+      overflow: hidden;
+      position: relative;
+      background: #2d3436;
+    }
+
+    .photo-thumb-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .photo-card:hover .photo-thumb-container img {
+      transform: scale(1.1);
+    }
+
+    .photo-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      padding: 0.2rem 0.6rem;
+      border-radius: 10px;
+      font-size: 0.75rem;
+    }
+
+    .photo-info {
+      padding: 1rem;
+    }
+
+    .photo-info h4 {
+      font-size: 1rem;
+      color: var(--dark-bg);
+      margin-bottom: 0.3rem;
+    }
+
+    .photo-info p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* Photo Modal Viewer */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content-box {
+      max-width: 800px;
+      width: 100%;
+      background: #fff;
+      border-radius: var(--border-radius-md);
+      overflow: hidden;
+      position: relative;
+      animation: zoomIn 0.3s ease;
+    }
+
+    @keyframes zoomIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-img-holder {
+      width: 100%;
+      max-height: 480px;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-img-holder img {
+      max-width: 100%;
+      max-height: 480px;
+      object-fit: contain;
+    }
+
+    .modal-details {
+      padding: 1.5rem;
+    }
+
+    .modal-close-btn {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      color: #fff;
+      font-size: 2rem;
+      cursor: pointer;
+      z-index: 10;
+      text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    }
+
+    /* ==========================================================================
+       8. PAGE 4: CLASSROOM AWARDS & SUPERLATIVES
+       ========================================================================== */
+    .awards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.8rem;
+    }
+
+    .award-card {
+      background: #fff;
+      border-radius: var(--border-radius-lg);
+      padding: 2rem 1.5rem;
+      text-align: center;
+      box-shadow: var(--box-shadow);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid #f0f0f0;
+      transition: var(--transition-fast);
+    }
+
+    .award-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .award-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 6px;
+      background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+    }
+
+    .award-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      display: inline-block;
+    }
+
+    .award-title {
+      font-size: 1.2rem;
+      color: var(--dark-bg);
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .award-winner {
+      font-size: 0.95rem;
+      color: var(--purple-accent);
+      font-weight: 600;
+      margin-bottom: 0.8rem;
+    }
+
+    .award-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    /* ==========================================================================
+       9. PAGE 5: WISH TREE & MEMORY NOTES
+       ========================================================================== */
+    .wishes-container {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 2rem;
+    }
+
+    .wish-form-card {
+      background: #fff;
+      padding: 2rem;
+      border-radius: var(--border-radius-lg);
+      box-shadow: var(--box-shadow);
+      height: fit-content;
+    }
+
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border-radius: var(--border-radius-sm);
+      border: 1px solid #ced4da;
+      font-family: inherit;
+      font-size: 0.95rem;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary-color);
+    }
+
+    .notes-wall {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1.2rem;
+    }
+
+    .sticky-note {
+      background: #fff9db;
+      padding: 1.5rem;
+      border-radius: var(--border-radius-md);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      transform: rotate(-1deg);
+      transition: var(--transition-fast);
+      position: relative;
+    }
+
+    .sticky-note:nth-child(even) {
+      background: #e7f5ff;
+      transform: rotate(1.5deg);
+    }
+
+    .sticky-note:nth-child(3n) {
+      background: #ffe3e3;
+      transform: rotate(-2deg);
+    }
+
+    .sticky-note:hover {
+      transform: scale(1.03) rotate(0deg);
+      z-index: 10;
+    }
+
+    .sticky-author {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--dark-bg);
+      margin-bottom: 0.5rem;
+      border-bottom: 1px stroke rgba(0,0,0,0.1);
+      padding-bottom: 0.3rem;
+    }
+
+    .sticky-text {
+      font-size: 0.88rem;
+      color: #495057;
+      line-height: 1.5;
+    }
+
+    .sticky-date {
+      font-size: 0.75rem;
+      color: #868e96;
+      margin-top: 1rem;
+      text-align: right;
+    }
+
+    /* ==========================================================================
+       10. PAGE 6: EMOTIONAL CLOSING & TRIBUTE LETTER
+       ========================================================================== */
+    .closing-wrapper {
+      background: linear-gradient(135deg, #0f111a, #1a1d2e);
+      color: #fff;
+      border-radius: var(--border-radius-lg);
+      padding: 4rem 2rem;
+      box-shadow: var(--box-shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .closing-letter-card {
+      max-width: 850px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(15px);
+      padding: 3.5rem 2.5rem;
+      border-radius: var(--border-radius-lg);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .closing-letter-card h2 {
+      font-size: 2.4rem;
+      color: var(--accent-color);
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .letter-body {
+      font-size: 1.15rem;
+      line-height: 2.1;
+      font-weight: 300;
+      color: rgba(255, 255, 255, 0.92);
+      white-space: pre-line;
+    }
+
+    .letter-signature-box {
+      margin-top: 3rem;
+      text-align: center;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .letter-signature-box h4 {
+      font-size: 1.4rem;
+      color: var(--secondary-color);
+    }
+
+    /* Audio Player Component Mockup */
+    .music-player-widget {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: var(--border-radius-md);
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .player-track-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .disc-icon {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: var(--primary-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: spin 6s linear infinite;
+    }
+
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+
+    /* ==========================================================================
+       11. FOOTER & UTILITIES
+       ========================================================================== */
+    footer {
+      background: #090a10;
+      color: rgba(255, 255, 255, 0.6);
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.9rem;
+      margin-top: 4rem;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* Multilingual Toggle Logic */
+    .en-content {
+      display: none;
+    }
+
+    body.lang-en .en-content {
+      display: block !important;
+    }
+
+    body.lang-en .km-content {
+      display: none !important;
+    }
+
+    /* Inline flex variant for tags/spans */
+    body.lang-en span.en-content, body.lang-en button.en-content {
+      display: inline-block !important;
+    }
+
+    /* ==========================================================================
+       12. RESPONSIVE MEDIA QUERIES
+       ========================================================================== */
+    @media (max-width: 900px) {
+      .timeline::before { left: 20px; }
+      .timeline-item { width: 100%; padding-left: 60px; padding-right: 0; }
+      .timeline-item.left, .timeline-item.right { left: 0; text-align: left; }
+      .left .timeline-icon, .right .timeline-icon { left: 0; }
+      .wishes-container { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      .hero-banner h1 { font-size: 2.1rem; }
+      .nav-menu {
+        position: fixed;
+        top: 75px;
+        left: -100%;
+        width: 100%;
+        height: calc(100vh - 75px);
+        background: var(--dark-bg);
+        flex-direction: column;
+        padding: 2rem;
+        transition: 0.3s ease;
+      }
+      .nav-menu.open { left: 0; }
+      .mobile-toggle { display: block; }
+      .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+    }
+  </style>
+</head>
+<body class="lang-km">
+
+  <!-- Background Canvas Animation -->
+  <canvas id="particle-canvas"></canvas>
+
+  <!-- ==========================================================================
+       HEADER & NAVIGATION
+       ========================================================================== -->
+  <nav class="navbar">
+    <div class="brand-logo">
+      🎓 CLASS <span>10H</span>
+    </div>
+
+    <ul class="nav-menu" id="navMenu">
+      <li>
+        <button class="nav-btn active" onclick="navigateToPage('page-home')">
+          🏠 <span class="km-content">ទំព័រដើម</span><span class="en-content">Home</span>
+        </button>
+      </li>
+      <li>
+        <button class="nav-btn" onclick="navigateToPage('page-timeline')">
+          ⏳ <span class="km-content">កំណត់ហេតុ</span><span class="en-content">Timeline</span>
+        </button>
+      </li>
+      <li>
+        <button class="nav-btn" onclick="navigateToPage('page-gallery')">
+          📸 <span class="km-content">អាល់ប៊ុមរូបថត</span><span class="en-content">Photos</span>
+        </button>
+      </li>
+      <li>
+        <button class="nav-btn" onclick="navigateToPage('page-awards')">
+          🏆 <span class="km-content">រង្វាន់កំប្លែង</span><span class="en-content">Awards</span>
+        </button>
+      </li>
+      <li>
+        <button class="nav-btn" onclick="navigateToPage('page-wishes')">
+          💬 <span class="km-content">សារចងចាំ</span><span class="en-content">Wish Wall</span>
+        </button>
+      </li>
+      <li>
+        <button class="nav-btn" onclick="navigateToPage('page-letter')">
+          💌 <span class="km-content">សារបេះដូង</span><span class="en-content">Final Letter</span>
+        </button>
+      </li>
+    </ul>
+
+    <div class="control-actions">
+      <button class="btn-lang" onclick="toggleLanguage()" id="langSwitcherBtn">
+        🌐 English
+      </button>
+      <button class="mobile-toggle" onclick="toggleMobileMenu()">☰</button>
+    </div>
+  </nav>
+
+  <!-- ==========================================================================
+       PAGES WRAPPER (SINGLE PAGE APPLICATION)
+       ========================================================================== -->
+  <div class="page-wrapper">
+
+    <!-- ------------------------------------------------------------------------
+         PAGE 1: HOME & HERO
+         ------------------------------------------------------------------------ -->
+    <section id="page-home" class="page active">
+      <div class="hero-banner">
+        <h1 class="km-content">ស្វាគមន៍មកកាន់ពិភព ១០H 🎓</h1>
+        <h1 class="en-content">Welcome to Class 10H Memory Vault 🎓</h1>
+
+        <p class="km-content">
+          ឆ្នាំសិក្សាថ្នាក់ទី១០ ដែលពេញដោយ Meow និងការតស៊ូប្រឡងជាមួយគ្នា!
+        </p>
+        <p class="en-content">
+          A memorable year filled with endless laughter, late-night panics, unexpected tears, and surviving exams together!
+        </p>
+
+        <button class="btn-nav-action" onclick="navigateToPage('page-timeline')" style="background: var(--primary-color);">
+          <span class="km-content">ចាប់ផ្តើមមើលការចងចាំ ➔</span>
+          <span class="en-content">Start Exploring Memories ➔</span>
+        </button>
+
+        <div class="hero-stats-grid">
+          <div class="stat-card">
+            <h3>50</h3>
+            <p class="km-content">សមាជិកថ្នាក់ ១០H</p>
+            <p class="en-content">Classmates</p>
+          </div>
+          <div class="stat-card">
+            <h3>300+</h3>
+            <p class="km-content">ម៉ោងរៀន និងរួមទុក្ខរួមគ្នា</p>
+            <p class="en-content">Hours of Laughter</p>
+          </div>
+          <div class="stat-card">
+            <h3>1985764+</h3>
+            <p class="km-content">រូបថត</p>
+            <p class="en-content">Vault Photos</p>
+          </div>
+          <div class="stat-card">
+            <h3>∞</h3>
+            <p class="km-content">មិត្តភាពឆ្កួតៗ</p>
+            <p class="en-content">Endless Friendship</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="quick-intro-box">
+        <h2 style="margin-bottom: 1rem;" class="km-content">អំពីWebនេះ</h2>
+        <h2 style="margin-bottom: 1rem;" class="en-content">About This Memory Hub</h2>
+        
+        <p class="km-content">
+          Webនេះត្រូវបានបង្កើតឡើងដើម្បីរក្សារាល់រឿងរ៉ាវតូចធំ ទាំងរឿងកំប្លែង រឿងធម្មតាក្នុងថ្នាក់ និងអារម្មណ៍រំភើបក្តុកក្តួលដែលពួកយើង 10H បានឆ្លងកាត់ជាមួយគ្នា។ ចុចប៊ូតុងខាងក្រោមដើម្បីផ្លាស់ប្តូរទំព័រ និងទស្សនារូបថតចងចាំ!
+        </p>
+        <p class="en-content">
+          This website was built to keep alive every story, joke, regular classroom moment, and emotional milestone we shared in 10H. Use the navigation buttons to flip through pages and view our photo vault!
+        </p>
+      </div>
+
+      <div class="ticker-wrap">
+        <div class="ticker-move">
+          <div class="ticker-item">✨ "10H Forever!"</div>
+          <div class="ticker-item">😴 " sleep during physics class..."</div>
+          <div class="ticker-item">🍕 "Secret snacks under desks!"</div>
+          <div class="ticker-item">📚 "Late night exam panics!"</div>
+          <div class="ticker-item">❤️ "One Family, One Spirit."</div>
+        </div>
+      </div>
+
+      <div class="page-controller">
+        <button class="btn-nav-action" disabled>
+          ⬅️ <span class="km-content">ថយក្រោយ</span><span class="en-content">Previous</span>
+        </button>
+        <span style="font-weight: 600; color: var(--text-muted);">Page 1 of 6</span>
+        <button class="btn-nav-action" onclick="navigateToPage('page-timeline')">
+          <span class="km-content">ទំព័របន្ទាប់</span><span class="en-content">Next</span> ➡️
+        </button>
+      </div>
+    </section>
+
+    <!-- ------------------------------------------------------------------------
+         PAGE 2: TIMELINE & STORIES
+         ------------------------------------------------------------------------ -->
+    <section id="page-timeline" class="page">
+      <h2 class="section-title km-content">កំណត់ហេតុដំណើររឿង ១០H</h2>
+      <h2 class="section-title en-content">10H Journey Timeline</h2>
+
+      <div class="timeline">
+        <!-- Event 1 -->
+        <div class="timeline-item left">
+          <div class="timeline-icon">🌱</div>
+          <div class="timeline-content">
+            <span class="tag tag-normal km-content">ថ្ងៃដំបូង</span>
+            <span class="tag tag-normal en-content">First Day</span>
+            <div class="timeline-date">October - Day 1</div>
+            <h3 class="km-content">ជំនួបដំបូង៖ ចង់តែដូរថ្នាក់ 😳</h3>
+            <h3 class="en-content">First Meeting: Shy & Quiet Days 😳</h3>
+            <p class="km-content">ថ្ងៃដំបូងចូលថ្នាក់ 10H មានអារម្មណ៍ថា​ ដដែលៗ មិនមានអ្វីថ្មី ចង់តែដូរថ្នាក់ៗ ព្រោះម្នាក់ៗលេងច្រើនពេក ហា</p>
+            <p class="en-content">On day one in 10H, everyone sat quietly without speaking to each other. Funny looking back now, because today we never shut up!</p>
+          </div>
+        </div>
+
+        <!-- Event 2 -->
+        <div class="timeline-item right">
+          <div class="timeline-icon">🤣</div>
+          <div class="timeline-content">
+            <span class="tag tag-funny km-content">រឿងកំប្លែង</span>
+            <span class="tag tag-funny en-content">Funny Moment</span>
+            <div class="timeline-date">December - Mid Term</div>
+            <h3 class="km-content">ម៉ោងរូបវិទ្យា​SBTនិងភូមិវិទ្យា 😴</h3>
+            <h3 class="en-content">Physics Naps & Secret Snacks 😴</h3>
+            <p class="km-content">​ ដល់ម៉ោងរូបម្តងៗ SBT ឡូយហ្មង តែពន្យល់មេរៀនពេលខ្លះអត់យល់​ ហើយពេលប្រាប់គាត់ គាត់ថាសិស្សចេះអត់ដល់...តែសប្បាយហ្មង ហើយគាត់កំពូលមនុស្ស​ កំពូលគ្រូរូបតែម្តង(ខ្លាំងពិត)!​ ឯម៉ោងភូមិវិញ ចង់តែដេក...eat mango!</p>
+            <p class="en-content">Nothing beats a peaceful nap during Physics. Real friends are the ones who kick your chair right before the teacher calls your name!</p>
+          </div>
+        </div>
+
+        <!-- Event 3 -->
+        <div class="timeline-item left">
+          <div class="timeline-icon">🏆</div>
+          <div class="timeline-content">
+            <span class="tag tag-normal km-content">សកម្មភាព</span>
+            <span class="tag tag-normal en-content">Activity</span>
+            <div class="timeline-date">February - April ; ឆមាសទី ១ </div>
+            <h3 class="km-content">​​ ឆមាសទី ១ ឆាមាស​បើកចាក់ ⚽</h3>
+            <h3 class="en-content">Semester 1 exam - the exam of CHEATING ⚽</h3>
+            <p class="km-content">ម្នាក់ៗខិតខំលេងហ្គេមជាពន់ពេក ដល់ថ្ងៃប្រឡងទើបមើលមេរៀនហើយបើកចាក់ទៀត ពេលឆមាសចប់អត់មានសិស្សមករៀនតែម្តង (one of the most depresssed vacation ever)</p>
+            <p class="en-content">The day we cheered so hard for 10H that we lost our voices. Win or lose didn't matter—our class unity was unmatched!</p>
+          </div>
+        </div>
+
+        <!-- Event 4 -->
+        <div class="timeline-item right">
+          <div class="timeline-icon">📖</div>
+          <div class="timeline-content">
+            <span class="tag tag-emotional km-content">maow</span>
+            <span class="tag tag-emotional en-content">Emotional</span>
+            <div class="timeline-date">May - July _ Depression & Exam Season </div>
+            <h3 class="km-content">រដូវកាលប្រឡង មិនទាន់បានអីផង ប្រឡងបាត់! 📚</h3>
+            <h3 class="en-content">Pre-Exam Panic & Group Calls 📚</h3>
+            <p class="km-content">ពេលចូលកងវិញម្នាក់ៗកើតជំងឺឌីប្រែសសិនទាំងអស់គ្នាតែម្តង ចូលមកប្រឡង ប្រឡងហើយប្រឡងទៀត អស់ពីប្រឡងចាញ់បាល់ ខ្លះsadព្រោះរឿង Girls ដូចជាជីរាក់ជាដើម(me too; what an experience!) ហើយមានអារម្មណ៍ថាឆ្នាំនេះដូចអុីម៉ូសិនណលម្យាងដែរ(អ្នកណាថាជោថាទៅ អត់ខ្វល់ទេ មានតែស្រឡាញ់ថែម) </p>
+            <p class="en-content">Late night group calls explaining math formulas until 2 AM. We studied together so that no classmate got left behind!</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-controller">
+        <button class="btn-nav-action" onclick="navigateToPage('page-home')">
+          ⬅️ <span class="km-content">ទំព័រដើម</span><span class="en-content">Home</span>
+        </button>
+        <span style="font-weight: 600; color: var(--text-muted);">Page 2 of 6</span>
+        <button class="btn-nav-action" onclick="navigateToPage('page-gallery')">
+          <span class="km-content">មើលអាល់ប៊ុមរូប</span><span class="en-content">View Photos</span> ➡️
+        </button>
+      </div>
+    </section>
+
+    <!-- ------------------------------------------------------------------------
+         PAGE 3: PHOTO VAULT (24 CARDS WITH EASY PLACEHOLDERS)
+         ------------------------------------------------------------------------ -->
+    <section id="page-gallery" class="page">
+      <h2 class="section-title km-content">អាល់ប៊ុមរូបថតកំពូលមនុស្ស</h2>
+      <h2 class="section-title en-content">Class 10H Photo Vault </h2>
+
+      <p style="text-align: center; margin-bottom: 1.5rem; color: var(--text-muted);" class="km-content">
+        *(រូបភាពខ្លះៗបានមកពីមិត្តទាំងឡាយ)*
+      </p>
+      <p style="text-align: center; margin-bottom: 1.5rem; color: var(--text-muted);" class="en-content">
+        *(10H photos')*
+      </p>
+
+      <div class="gallery-grid" id="photoGrid">
+        <!-- 24 Photo Cards dynamically built or declared -->
+        <!-- Card 1 -->
+        <div class="photo-card" onclick="openPhotoModal('photo_2026-07-23_20-52-37.jpg', 'ស្នាមញញឹមថ្ងៃដំបូង', 'Day 1 Smiles')">
+          <div class="photo-thumb-container">
+            <img src="photo_2026-07-23_20-52-37.jpg" alt="Photo 1">
+            <span class="photo-badge">#1</span>
+          </div>
+          <div class="photo-info">
+            <h4 class="km-content">ស្នាមញញឹមថ្ងៃដំបូង</h4><h4 class="en-content">Day 1 Smiles</h4>
+            <p class="km-content">សិស្សពូកែទាំងទ្វេ</p><p class="en-content">Our very first class picture</p>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="photo-card" onclick="openPhotoModal('photo_2026-07-23_20-52-03.jpg', 'ម៉ោងរៀនជុំគ្នា', 'Group Study Hour')">
+          <div class="photo-thumb-container">
+            <img src="photo_2026-07-23_20-52-03.jpg" alt="Photo 2">
+            <span class="photo-badge">#2</span>
+          </div>
+          <div class="photo-info">
+            <h4 class="km-content">ម៉ោងពលកម្មចុងក្រោយ</h4><h4 class="en-content">Group Study Hour</h4>
+            <p class="km-content">មកដើម្បីយកពិន្ទុ</p><p class="en-content">Solving hard problems together</p>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="photo-card" onclick="openPhotoModal('photo_2026-07-23_20-54-51.jpg', 'លួចគេងក្នុងថ្នាក់', 'Classroom Nap Time')">
+          <div class="photo-thumb-container">
+            <img src="photo_2026-07-23_20-54-51.jpg" alt="Photo 3">
+            <span class="photo-badge">#3</span>
+          </div>
+          <div class="photo-info">
+            <h4 class="km-content">ម៉ោងគណិតម្តងៗ</h4><h4 class="en-content">Classroom Nap Time</h4>
+            <p class="km-content">សិស្សពូកែ</p><p class="en-content">Caught sleeping in period 4</p>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="photo-card" onclick="openPhotoModal('photo_2026-07-23_21-09-21.jpg', 'ចេញលេងសប្បាយ', 'Break Time Fun')">
+          <div class="photo-thumb-container">
+            <img src="photo_2026-07-23_21-09-21.jpg" alt="Photo 4">
+            <span class="photo-badge">#4</span>
+          </div>
+          <div class="photo-info">
+            <h4 class="km-content">Professional Photo </h4><h4 class="en-content">Break Time Fun</h4>
+            <p class="km-content">រូបភាពជុំគ្នា</p><p class="en-content">Snacking and endless jokes</p>
+          </div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="photo-card" onclick="openPhotoModal('photo_2026-07-23_21-09-18.jpg', 'ក្រុមស៊ែលហ្វី', 'Selfie Squad')">
+          <div class="photo-thumb-container">
+            <img src="photo_2026-07-23_21-09-18.jpg" alt="Photo 5">
+            <span class="photo-badge">#5</span>
+          </div>
+          <div class="photo-info">
+            <h4 class="km-content">ក្រសួងហិរញ្ញវត្ថុ</h4><h4 class="en-content">Selfie Squad</h4>
+            <p class="km-content">កម្ចាត់អំពីពុករលួយ លាងលុយកខ្វក់</p><p class="en-content">Quick picture before class starts</p>
+          </div>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="photo-card" onclick="openPhotoModal('photo_2026-07-23_21-49-36.jpg', 'ទិវាកីឡា', 'Sports Day Spirit')">
+          <div class="photo-thumb-container">
+            <img src="photo_2026-07-23_21-49-36.jpg" alt="Photo 6">
+            <span class="photo-badge">#6</span>
+          </div>
+          <div class="photo-info">
+            <h4 class="km-content">ម៉ោងកុំព្យូទ័រ</h4><h4 class="en-content">Sports Day Spirit</h4>
+            <p class="km-content">ម៉ោង យ៉ាប់ហ្មងចង់តែវៃអាងួន</p><p class="en-content">Cheering for team 10H</p>
+          </div>
+        </div>
+
+        <!-- Card 7 -->
+        <div class="photo-card" onclick="openPhotoModal('photo_2026-07-23_22-06-12.jpg', 'ខួបកំណើតមិត្ត', 'Birthday Surprise')">
+          <div class="photo-thumb-container">
+            <img src="photo_2026-07-23_22-06-12.jpg" alt="Photo 7">
+            <span class="photo-badge">#7</span>
+          </div>
+          <div class="photo-info">
+            <h4 class="km-content">រីឡេក</h4><h4 class="en-content">Birthday Surprise</h4>
+            <p class="km-content">បង្កើតភាពច្នៃប្រឌិត</p><p class="en-content">Surprising a classmate in class</p>
+          </div>
+        </div>
+
+        <!-- Card 8 -->
+        <div class="photo-card" onclick="openPhotoModal('photo_2026-07-23_22-04-05.jpg', 'អ្នកតស៊ូប្រឡង', 'Exam Survivors')">
+          <div class="photo-thumb-container">
+            <img src="photo_2026-07-23_22-04-05.jpg" alt="Photo 8">
+            <span class="photo-badge">#8</span>
+          </div>
+          <div class="photo-info">
+            <h4 class="km-content">ពេលម៉ោងពលកម្មចប់</h4><h4 class="en-content">Exam Survivors</h4>
+            <p class="km-content">កំពូលអ្នកឡើងភ្នំ</p><p class="en-content">Relief after the final paper</p>
+          </div>
+        </div>
+
+        <!-- Card 9 -->
+        <div class="photo-card" onclick="openPhotoModal('photo_2026-07-23_20-56-26.jpg', 'ដើរកម្សាន្តថ្នាក់', 'Class Trip Outing')">
+          <div class="photo-thumb-container">
+            <img src="photo_2026-07-23_20-56-26.jpg" alt="Photo 9">
+            <span class="photo-badge">#9</span>
+          </div>
+          <div class="photo-info">
+            <h4 class="km-content">ស៊ែលហ្វី</h4><h4 class="en-content">Class Trip Outing</h4>
+            <p class="km-content">Sefieee</p><p class="en-content">Creating memories outside school</p>
+          </div>
+        </div>
+
+        <!-- Card 10 -->
+        <div class="photo-card" onclick="openPhotoModal('photo_2026-07-02_14-53-52.jpg', 'អ្នកស្អាតប្រចាំថ្នាក់', 'Class Fashion stars')">
+          <div class="photo-thumb-container">
+            <img src="photo_2026-07-02_14-53-52.jpg" alt="Photo 10">
+            <span class="photo-badge">#10</span>
+          </div>
+          <div class="photo-info">
+            <h4 class="km-content">ម៉ោងរូបវិទ្យា</h4><h4 class="en-content">Class Fashion Stars</h4>
+            <p class="km-content">ស៊ែលហ្វីទៀត </p><p class="en-content">Looking stylish on event day</p>
+          </div>
+        </div>
+
+        <!-- Card 11 -->
+        <div class="photo-card" onclick="openPhotoModal('photo_2026-07-23_21-15-28.jpg', 'កាច់រាងកំប្លែង', 'Funny Poses')">
+          <div class="photo-thumb-container">
+            <img src="photo_2026-07-23_21-15-28.jpg" alt="Photo 11">
+            <span class="photo-badge">#11</span>
+          </div>
+          <div class="photo-info">
+            <h4 class="km-content">ចូលរួមធ្វើកិច្ចការសង្គម</h4><h4 class="en-content">Funny Poses</h4>
+            <p class="km-content">ចូលរួមលុយដើម្បីជនភាសសឹក</p><p class="en-content">Doing silly poses for memories</p>
+          </div>
+        </div>
+
+        <!-- Card 12 -->
+        <div class="photo-card" onclick="openPhotoModal('photo_2026-07-23_21-22-12.jpg', 'បាយថ្ងៃត្រង់', 'Lunch Break Gathering')">
+          <div class="photo-thumb-container">
+            <img src="photo_2026-07-23_21-22-12.jpg" alt="Photo 12">
+            <span class="photo-badge">#12</span>
+          </div>
+          <div class="photo-info">
+            <h4 class="km-content">បាយថ្ងៃត្រង់</h4><h4 class="en-content">Lunch Break Gathering</h4>
+            <p class="km-content">ហូបបាយជុំគ្នានៅអាហារដ្ឋាន</p><p class="en-content">Eating lunch at canteen together</p>
+          </div>
+        </div>
+
+        <!-- Card 13 -->
+        <div class="photo-card" onclick="openPhotoModal('photo_2026-07-23_22-04-05.jpg', 'សម្អាតថ្នាក់', 'Class Cleaning Day')">
+          <div class="photo-thumb-container">
+            <img src="photo_2026-07-23_22-04-05.jpg" alt="Photo 13">
+            <span class="photo-badge">#13</span>
+          </div>
+          <div class="photo-info">
+            <h4 class="km-content">សម្អាតថ្នាក់</h4><h4 class="en-content">Class Cleaning Day</h4>
+            <p class="km-content">ជួយគ្នាបោសសម្អាតថ្នាក់</p><p class="en-content">Cleaning the classroom together</p>
+          </div>
+        </div>
+
+        <!-- Card 14 -->
+        <div class="photo-card" onclick="openPhotoModal('photo_2026-07-23_20-55-46.jpg', 'ម៉ោងតន្ត្រី', 'Music & Jamming')">
+          <div class="photo-thumb-container">
+            <img src="photo_2026-07-23_20-55-46.jpg" alt="Photo 14">
+            <span class="photo-badge">#14</span>
+          </div>
+          <div class="photo-info">
+            <h4 class="km-content">ម៉ោងតន្ត្រី</h4><h4 class="en-content">Music & Jamming</h4>
+            <p class="km-content">ច្រៀងចម្រៀងកំដរអារម្មណ៍</p><p class="en-content">Singing together in free period</p>
+          </div>
+        </div>
+
+        <!-- Card 15 -->
+        <div class="photo-card" onclick="openPhotoModal('photo_2026-07-23_20-55-47.jpg', 'មិត្តជិតស្និទ្ធ', 'Best Friends Moment')">
+          <div class="photo-thumb-container">
+            <img src="photo_2026-07-23_20-55-47.jpg" alt="Photo 15">
+            <span class="photo-badge">#15</span>
+          </div>
+          <div class="photo-info">
+            <h4 class="km-content">មិត្តជិតស្និទ្ធ</h4><h4 class="en-content">Best Friends Moment</h4>
+            <p class="km-content">មិត្តភាពរឹងមាំជានិច្ច</p><p class="en-content">Unbreakable bond of friendship</p>
+          </div>
+        </div>
+
+        <!-- Card 16 -->
+        <div class="photo-card" onclick="openPhotoModal('photo_2026-07-23_21-07-49 (2).jpg', 'ម៉ោងពិសោធន៍', 'Science Lab Days')">
+          <div class="photo-thumb-container">
+            <img src="photo_2026-07-23_21-07-49 (2).jpg" alt="Photo 16">
+            <span class="photo-badge">#16</span>
+          </div>
+          <div class="photo-info">
+            <h4 class="km-content">ម៉ោងពិសោធន៍</h4><h4 class="en-content">Science Lab Days</h4>
+            <p class="km-content">រៀនពិសោធន៍ក្នុងបន្ទប់លំហ</p><p class="en-content">Doing experiments in science lab</p>
+          </div>
+        </div>
+
+        <!-- Card 17 -->
+        <div class="photo-card" onclick="openPhotoModal('photo_2026-07-23_21-00-36.jpg', 'ថ្ងៃភ្លៀងធ្លាក់', 'Rainy Day In Class')">
+          <div class="photo-thumb-container">
+            <img src="photo_2026-07-23_21-00-36.jpg" alt="Photo 17">
+            <span class="photo-badge">#17</span>
+          </div>
+          <div class="photo-info">
+            <h4 class="km-content">ថ្ងៃភ្លៀងធ្លាក់</h4><h4 class="en-content">Rainy Day In Class</h4>
+            <p class="km-content">អង្គុយមើលភ្លៀង និងនិយាយគ្នា</p><p class="en-content">Watching rain and chatting</p>
+          </div>
+        </div>
+
+        <!-- Card 18 -->
+        <div class="photo-card" onclick="openPhotoModal('photo_2026-07-23_21-11-14.jpg', 'កិច្ចការផ្ទះប្រញាប់', 'Rush Homework')">
+          <div class="photo-thumb-container">
+            <img src="photo_2026-07-23_21-11-14.jpg" alt="Photo 18">
+            <span class="photo-badge">#18</span>
+          </div>
+          <div class="photo-info">
+            <h4 class="km-content">កិច្ចការផ្ទះប្រញាប់</h4><h4 class="en-content">Rush Homework</h4>
+            <p class="km-content">ធ្វើកិច្ចការមុនគ្រូចូល ៥នាទី</p><p class="en-content">Finishing homework 5 mins before</p>
+          </div>
+        </div>
+
+        <!-- Card 19 -->
+        <div class="photo-card" onclick="openPhotoModal('photo_2026-07-23_21-22-13.jpg', 'ស្នាមញញឹមមិនប្រែ', 'Everlasting Smiles')">
+          <div class="photo-thumb-container">
+            <img src="photo_2026-07-23_21-22-13.jpg" alt="Photo 19">
+            <span class="photo-badge">#19</span>
+          </div>
+          <div class="photo-info">
+            <h4 class="km-content">ស្នាមញញឹមមិនប្រែ</h4><h4 class="en-content">Everlasting Smiles</h4>
+            <p class="km-content">កែវភ្នែកពោរពេញដោយក្តីសង្ឃឹម</p><p class="en-content">Bright smiles for the future</p>
+          </div>
+        </div>
+
+        <!-- Card 20 -->
+        <div class="photo-card" onclick="openPhotoModal('photo_2026-07-23_20-55-46.jpg', 'ពិធីជប់លៀងចុងឆ្នាំ', 'End of Year Party')">
+          <div class="photo-thumb-container">
+            <img src="photo_2026-07-23_20-55-46.jpg" alt="Photo 20">
+            <span class="photo-badge">#20</span>
+          </div>
+          <div class="photo-info">
+            <h4 class="km-content">ពិធីជប់លៀងចុងឆ្នាំ</h4><h4 class="en-content">End of Year Party</h4>
+            <p class="km-content">អបអរសាទរការបញ្ចប់ឆ្នាំ១០</p><p class="en-content">Celebrating completing Grade 10</p>
+          </div>
+        </div>
+
+        <!-- Card 21 -->
+        <div class="photo-card" onclick="openPhotoModal('photo_2026-07-23_21-11-17.jpg', 'គ្រូបង្រៀនជាទីស្រឡាញ់', 'Our Beloved Teacher')">
+          <div class="photo-thumb-container">
+            <img src="photo_2026-07-23_21-11-17.jpg" alt="Photo 21">
+            <span class="photo-badge">#21</span>
+          </div>
+          <div class="photo-info">
+            <h4 class="km-content">គ្រូបង្រៀនជាទីស្រឡាញ់</h4><h4 class="en-content">Our Beloved Teacher</h4>
+            <p class="km-content">ការថតរូបអនុស្សាវរីយ៍ជាមួយគ្រូ</p><p class="en-content">Group photo with class teacher</p>
+          </div>
+        </div>
+
+        <!-- Card 22 -->
+        <div class="photo-card" onclick="openPhotoModal('photo_2026-07-23_21-15-30.jpg', 'ការចងចាំនៅក្ដារខៀន', 'Blackboard Memories')">
+          <div class="photo-thumb-container">
+            <img src="photo_2026-07-23_21-15-30.jpg" alt="Photo 22">
+            <span class="photo-badge">#22</span>
+          </div>
+          <div class="photo-info">
+            <h4 class="km-content">ការចងចាំនៅក្ដារខៀន</h4><h4 class="en-content">Blackboard Memories</h4>
+            <p class="km-content">សរសេរឈ្មោះសមាជិក 10H</p><p class="en-content">Class names written on board</p>
+          </div>
+        </div>
+
+        <!-- Card 23 -->
+        <div class="photo-card" onclick="openPhotoModal('photo_2026-07-23_21-08-04.jpg', 'ថ្ងៃចុងក្រោយ', 'The Last Day')">
+          <div class="photo-thumb-container">
+            <img src="photo_2026-07-23_21-08-04.jpg" alt="Photo 23">
+            <span class="photo-badge">#23</span>
+          </div>
+          <div class="photo-info">
+            <h4 class="km-content">ថ្ងៃចុងក្រោយ</h4><h4 class="en-content">The Last Day</h4>
+            <p class="km-content">ឱបគ្នាលា និងជូនពរគ្នា</p><p class="en-content">Hugging and wishing good luck</p>
+          </div>
+        </div>
+
+        <!-- Card 24 -->
+        <div class="photo-card" onclick="openPhotoModal('photo_2026-07-23_21-08-09 (2).jpg', 'គ្រួសារ ១០H ជារៀងរហូត', '10H Family Forever')">
+          <div class="photo-thumb-container">
+            <img src="photo_2026-07-23_21-08-09 (2).jpg" alt="Photo 24">
+            <span class="photo-badge">#24</span>
+          </div>
+          <div class="photo-info">
+            <h4 class="km-content">គ្រួសារ ១០H ជារៀងរហូត</h4><h4 class="en-content">10H Family Forever</h4>
+            <p class="km-content">រូបថតរួមគ្នាចុងក្រោយ</p><p class="en-content">Forever in our hearts</p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="page-controller">
+        <button class="btn-nav-action" onclick="navigateToPage('page-timeline')">
+          ⬅️ <span class="km-content">កំណត់ហេតុ</span><span class="en-content">Timeline</span>
+        </button>
+        <span style="font-weight: 600; color: var(--text-muted);">Page 3 of 6</span>
+        <button class="btn-nav-action" onclick="navigateToPage('page-awards')">
+          <span class="km-content">រង្វាន់កំប្លែង</span><span class="en-content">View Awards</span> ➡️
+        </button>
+      </div>
+    </section>
+
+    <!-- ------------------------------------------------------------------------
+         PAGE 4: CLASSROOM AWARDS & SUPERLATIVES
+         ------------------------------------------------------------------------ -->
+    <section id="page-awards" class="page">
+      <h2 class="section-title km-content">ពានរង្វាន់កំប្លែងប្រចាំថ្នាក់ ១០H</h2>
+      <h2 class="section-title en-content">10H Funny Superlative Awards</h2>
+
+      <div class="awards-grid">
+        <!-- Award 1 -->
+        <div class="award-card">
+          <div class="award-icon">😴</div>
+          <div class="award-title km-content">កំពូលអ្នកគេងក្នុងថ្នាក់</div>
+          <div class="award-title en-content">The Heavy Sleeper Award</div>
+          <div class="award-winner"> Winner: Sothea / សុធា</div>
+          <div class="award-desc km-content">អាហារូបករណ៍គេងគ្រប់ម៉ោងរៀន ទោះបីគ្រូស្រែកយ៉ាងណាក៏មិនភ្ញាក់!</div>
+          <div class="award-desc en-content">Can sleep through any lecture regardless of how loud the teacher is!</div>
+        </div>
+
+        <!-- Award 2 -->
+        <div class="award-card">
+          <div class="award-icon">🍕</div>
+          <div class="award-title km-content">កំពូលអ្នកលួចញ៉ាំនំ</div>
+          <div class="award-title en-content">The Master Ninja Snacker</div>
+          <div class="award-winner"> Winner: Bopha / បុប្ផា</div>
+          <div class="award-desc km-content">ជំនាញលួចញ៉ាំបាយ និងនំក្រោមតុ ដោយគ្រូមិនដែលចាប់បានសោះ!</div>
+          <div class="award-desc en-content">Mastered eating entire meals under the desk without getting caught.</div>
+        </div>
+
+        <!-- Award 3 -->
+        <div class="award-card">
+          <div class="award-icon">🤡</div>
+          <div class="award-title km-content">ត្លុកប្រចាំថ្នាក់</div>
+          <div class="award-title en-content">Class Clown of the Year</div>
+          <div class="award-winner"> Winner: Dara / ដារ៉ា</div>
+          <div class="award-desc km-content">អ្នកបង្កើតស្នាមញញឹម និងសំឡេងសើចនៅពេលថ្នាក់ស្ងាត់ជ្រងំ!</div>
+          <div class="award-desc en-content">Always turning serious moments into uncontrollable group laughter.</div>
+        </div>
+
+        <!-- Award 4 -->
+        <div class="award-card">
+          <div class="award-icon">📝</div>
+          <div class="award-title km-content">អ្នកសង្គ្រោះកិច្ចការផ្ទះ</div>
+          <div class="award-title en-content">The Homework Savior</div>
+          <div class="award-winner"> Winner: Sophea / សុភា</div>
+          <div class="award-desc km-content">មនុស្សដំបូងគេដែលត្រូវគេចោមរោមសុំចម្លងកិច្ចការផ្ទះនៅម៉ោង 6:50 ព្រឹក!</div>
+          <div class="award-desc en-content">Surrounded by 15 people every morning at 6:50 AM for homework copying.</div>
+        </div>
+
+        <!-- Award 5 -->
+        <div class="award-card">
+          <div class="award-icon">📱</div>
+          <div class="award-title km-content">កំពូលអ្នកតបឆាតលឿន</div>
+          <div class="award-title en-content">The 24/7 Online Admin</div>
+          <div class="award-winner"> Winner: Vuthy / វុទ្ធី</div>
+          <div class="award-desc km-content">តប Telegram ថ្នាក់លឿនជាងពន្លឺ មិនថាយប់ជ្រៅដល់ម៉ោងប៉ុន្មាន!</div>
+          <div class="award-desc en-content">Replies to class Telegram group within 2 seconds even at 3 AM.</div>
+        </div>
+
+        <!-- Award 6 -->
+        <div class="award-card">
+          <div class="award-icon">📸</div>
+          <div class="award-title km-content">កាមេរ៉ាសម្ងាត់ប្រចាំថ្នាក់</div>
+          <div class="award-title en-content">The Meme Photographer</div>
+          <div class="award-winner"> Winner: Kimsour / គឹមសួរ</div>
+          <div class="award-desc km-content">មានរូបថតកំប្លែង (Meme) របស់មិត្តភក្តិគ្រប់គ្នាក្នុងទូរស័ព្ទ!</div>
+          <div class="award-desc en-content">Owns an empire of embarrassing, candid photos of every single classmate.</div>
+        </div>
+      </div>
+
+      <div class="page-controller">
+        <button class="btn-nav-action" onclick="navigateToPage('page-gallery')">
+          ⬅️ <span class="km-content">អាល់ប៊ុមរូប</span><span class="en-content">Photos</span>
+        </button>
+        <span style="font-weight: 600; color: var(--text-muted);">Page 4 of 6</span>
+        <button class="btn-nav-action" onclick="navigateToPage('page-wishes')">
+          <span class="km-content">សារចងចាំ</span><span class="en-content">Wish Wall</span> ➡️
+        </button>
+      </div>
+    </section>
+
+    <!-- ------------------------------------------------------------------------
+         PAGE 5: DIGITAL WISH TREE & NOTES
+         ------------------------------------------------------------------------ -->
+    <section id="page-wishes" class="page">
+      <h2 class="section-title km-content">ជញ្ជាំងសារ និងការចងចាំ 💬</h2>
+      <h2 class="section-title en-content">Class 10H Wish Wall & Notes 💬</h2>
+
+      <div class="wishes-container">
+        <!-- Form to add note -->
+        <div class="wish-form-card">
+          <h3 style="margin-bottom: 1rem;" class="km-content">សរសេរសារទុកចងចាំ</h3>
+          <h3 style="margin-bottom: 1rem;" class="en-content">Leave a Memory Note</h3>
+
+          <form id="noteForm" onsubmit="addMemoryNote(event)">
+            <div class="form-group">
+              <label class="km-content">ឈ្មោះរបស់អ្នក (ឬរហស្សនាម):</label>
+              <label class="en-content">Your Name / Nickname:</label>
+              <input type="text" id="noteAuthor" class="form-control" placeholder="e.g. Sokha 10H" required>
+            </div>
+            <div class="form-group">
+              <label class="km-content">សាររបស់អ្នកសម្រាប់ 10H:</label>
+              <label class="en-content">Your Message for Class 10H:</label>
+              <textarea id="noteText" class="form-control" rows="4" placeholder="Write something funny, happy, or sweet..." required></textarea>
+            </div>
+            <button type="submit" class="btn-nav-action" style="width: 100%; justify-content: center; background: var(--secondary-color);">
+              <span class="km-content">បិទសារលើជញ្ជាំង 📌</span>
+              <span class="en-content">Post Note to Wall 📌</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Sticky Notes Grid -->
+        <div class="notes-wall" id="notesWall">
+          <!-- Note 1 -->
+          <div class="sticky-note">
+            <div class="sticky-author"> Sokha (សុខា)</div>
+            <div class="sticky-text">"អរគុណ 10H ដែលបានធ្វើឲ្យឆ្នាំទី១០ ជាឆ្នាំដ៏សប្បាយបំផុតក្នុងជីវិតសិស្សរបស់ខ្ញុំ!"</div>
+            <div class="sticky-date">Year 10 Memory</div>
+          </div>
+          <!-- Note 2 -->
+          <div class="sticky-note">
+            <div class="sticky-author"> Piseth (ពិសិដ្ឋ)</div>
+            <div class="sticky-text">"ទោះបីជាថ្ងៃមុខយើងបែកគ្នាក៏ដោយ សូមកុំភ្លេចសំឡេងសើច និងការតស៊ូប្រឡងជាមួយគ្នានៅថ្នាក់នេះ!"</div>
+            <div class="sticky-date">Year 10 Memory</div>
+          </div>
+          <!-- Note 3 -->
+          <div class="sticky-note">
+            <div class="sticky-author"> Chanthea (ចាន់ធា)</div>
+            <div class="sticky-text">"សូមជូនពរមិត្តៗ ១០H ទាំងអស់គ្នាឲ្យជោគជ័យក្នុងការសិក្សា និងសម្រេចក្តីស្រមៃគ្រប់ៗគ្នា!"</div>
+            <div class="sticky-date">Year 10 Memory</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-controller">
+        <button class="btn-nav-action" onclick="navigateToPage('page-awards')">
+          ⬅️ <span class="km-content">រង្វាន់កំប្លែង</span><span class="en-content">Awards</span>
+        </button>
+        <span style="font-weight: 600; color: var(--text-muted);">Page 5 of 6</span>
+        <button class="btn-nav-action" onclick="navigateToPage('page-letter')">
+          <span class="km-content">សារបេះដូងចុងក្រោយ</span><span class="en-content">Final Letter</span> ➡️
+        </button>
+      </div>
+    </section>
+
+    <!-- ------------------------------------------------------------------------
+         PAGE 6: EMOTIONAL CLOSING & LETTER
+         ------------------------------------------------------------------------ -->
+    <section id="page-letter" class="page">
+      <div class="closing-wrapper">
+
+        <!-- Audio Player Mockup -->
+        <div class="music-player-widget">
+          <div class="player-track-info">
+            <div class="disc-icon">🎵</div>
+            <div>
+              <h5 style="color: #fff; font-size: 1rem;">10H Graduation Anthem - Memory Song</h5>
+              <p style="color: rgba(255,255,255,0.6); font-size: 0.8rem;">Playing background vibes...</p>
+            </div>
+          </div>
+          <button class="btn-lang" onclick="toggleAudio()" id="audioBtn">🔊 Sound: ON</button>
+        </div>
+
+        <div class="closing-letter-card">
+          <h2 class="km-content">សារបេះដូងផ្ញើជូនគ្រួសារ ១០H 💌</h2>
+          <h2 class="en-content">A Heartfelt Farewell Letter to 10H 💌</h2>
+
+          <div class="letter-body km-content">
+"ដល់មិត្តភក្តិថ្នាក់ ១០H ទាំងអស់គ្នា...
+
+ពួកយើងបានចាប់ផ្តើមឆ្នាំទី១០ ដោយភាពមិនស្និទ្ធស្នាល ប៉ុន្តែពួកយើងបានបញ្ចប់វាដោយក្លាយជាគ្រួសារ ១០H ដ៏រឹងមាំមួយ។ 
+
+នៅក្នុងថ្នាក់រៀនតូចមួយនេះ ពួកយើងបានឆ្លងកាត់រឿងរ៉ាវជាច្រើនជាមួយគ្នា៖
+• ការសើចកកកាយរហូតដល់ឈឺពោះនៅម៉ោងចេញលេង
+• ការភ័យស្លន់ស្លោ និងលួចមើលគ្នាពេលគ្រូហៅឡើងដោះស្រាយលំហាត់
+• ការលួចគេង និងចែកនំគ្នាមួយម៉ាត់ម្នាក់ក្រោមតុ
+• និងការតស៊ូប្រឡងទាំងយប់អាធ្រាត្រដើម្បីកុំឲ្យមិត្តម្នាក់ណាធ្លាក់។
+
+ទោះបីជាពេលវេលាកន្លងផុតទៅ ហើយថ្ងៃខាងមុខពួកយើងអាចនឹងដើរលើផ្លូវខុសៗគ្នាក៏ដោយ ប៉ុន្តែស្នាមញញឹម សំឡេងសើច ទឹកភ្នែក និងក្តីស្រលាញ់ដែលពួកយើងបានចែករំលែកនៅក្នុងថ្នាក់ ១០H នឹងស្ថិតនៅក្នុងបេះដូងរបស់ពួកយើងជានិច្ច។ 
+
+អរគុណសម្រាប់រាល់ការចងចាំដ៏មានតម្លៃ! ១០H មិនមែនគ្រាន់តែជាឈ្មោះថ្នាក់រៀននោះទេ ប៉ុន្តែជាផ្ទះ និងជាផ្នែកមួយនៃជីវិតពួកយើងរហូតតទៅ។"
+          </div>
+
+          <div class="letter-body en-content">
+"To every single classmate in 10H...
+
+We started Year 10 as relative strangers, but we finished it as one inseparable 10H family. 
+
+Inside this small classroom, we shared countless unforgettable moments:
+• Laughing together until our stomachs hurt during break time.
+• The collective panic when the teacher randomly called a name to go to the board.
+• Secretly sharing snacks under the desk and taking naps during long lectures.
+• Late-night study sessions making sure nobody got left behind.
+
+Though time moves forward relentlessly and our individual paths may take us in different directions, the smiles, tears, laughter, and pure friendship we built in 10H will remain forever etched in our hearts.
+
+Thank you for every single precious memory. 10H was never just a classroom number—it is a home we built together, and a legacy we will carry forever."
+          </div>
+
+          <div class="letter-signature-box">
+            <h4 class="km-content">— ថ្នាក់ ១០H នៅក្នុងបេះដូងជានិច្ច ❤️ —</h4>
+            <h4 class="en-content">— 10H Forever in Our Hearts ❤️ —</h4>
+            <p style="color: rgba(255,255,255,0.6); margin-top: 0.5rem; font-size: 0.9rem;">
+              Class of Year 10H Memory Vault
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="page-controller">
+        <button class="btn-nav-action" onclick="navigateToPage('page-wishes')">
+          ⬅️ <span class="km-content">សារចងចាំ</span><span class="en-content">Wish Wall</span>
+        </button>
+        <span style="font-weight: 600; color: var(--text-muted);">Page 6 of 6</span>
+        <button class="btn-nav-action" onclick="navigateToPage('page-home')">
+          🔄 <span class="km-content">ត្រឡប់ទៅដើម</span><span class="en-content">Back to Start</span>
+        </button>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ==========================================================================
+       PHOTO LIGHTBOX MODAL
+       ========================================================================== -->
+  <div class="modal" id="photoModal" onclick="closePhotoModal()">
+    <span class="modal-close-btn">&times;</span>
+    <div class="modal-content-box" onclick="event.stopPropagation()">
+      <div class="modal-img-holder">
+        <img id="modalImage" src="" alt="Enlarged memory photo">
+      </div>
+      <div class="modal-details">
+        <h3 id="modalTitleKm" class="km-content" style="color: var(--dark-bg); margin-bottom: 0.3rem;"></h3>
+        <h3 id="modalTitleEn" class="en-content" style="color: var(--dark-bg); margin-bottom: 0.3rem;"></h3>
+        <p id="modalDesc" style="color: var(--text-muted); font-size: 0.9rem;">Class 10H Vault Photo</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       FOOTER
+       ========================================================================== -->
+  <footer>
+    <p class="km-content">© ២០២៦ ថ្នាក់ ១០H Memory Vault | បង្កើតឡើងដោយក្តីស្រឡាញ់សម្រាប់មិត្តរួមថ្នាក់ទាំងអស់ ❤️</p>
+    <p class="en-content">© 2026 Class 10H Memory Vault | Built with love for all 10H classmates ❤️</p>
+  </footer>
+
+  <!-- ==========================================================================
+       JAVASCRIPT CONTROLLER (ROUTER, LANGUAGES, MODAL, PARTICLES)
+       ========================================================================== -->
+  <script>
+    /* --------------------------------------------------------------------------
+       1. ROUTER / PAGE NAVIGATION SYSTEM
+       -------------------------------------------------------------------------- */
+    const pages = ['page-home', 'page-timeline', 'page-gallery', 'page-awards', 'page-wishes', 'page-letter'];
+
+    function navigateToPage(pageId) {
+      // Hide all pages
+      pages.forEach(id => {
+        const pageElem = document.getElementById(id);
+        if (pageElem) {
+          pageElem.classList.remove('active');
+        }
+      });
+
+      // Show target page
+      const targetPage = document.getElementById(pageId);
+      if (targetPage) {
+        targetPage.classList.add('active');
+      }
+
+      // Update Nav Buttons
+      const navButtons = document.querySelectorAll('.nav-btn');
+      navButtons.forEach(btn => btn.classList.remove('active'));
+
+      // Find active index
+      const activeIndex = pages.indexOf(pageId);
+      if (navButtons[activeIndex]) {
+        navButtons[activeIndex].classList.add('active');
+      }
+
+      // Scroll smoothly to top of page
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Close mobile menu if open
+      document.getElementById('navMenu').classList.remove('open');
+    }
+
+    /* --------------------------------------------------------------------------
+       2. BILINGUAL LANGUAGE TOGGLE (KHMER FIRST DEFAULT)
+       -------------------------------------------------------------------------- */
+    let currentLang = 'km';
+
+    function toggleLanguage() {
+      const body = document.body;
+      const langBtn = document.getElementById('langSwitcherBtn');
+
+      if (currentLang === 'km') {
+        body.classList.remove('lang-km');
+        body.classList.add('lang-en');
+        langBtn.innerHTML = '🌐 ភាសាខ្មែរ (Khmer)';
+        currentLang = 'en';
+      } else {
+        body.classList.remove('lang-en');
+        body.classList.add('lang-km');
+        langBtn.innerHTML = '🌐 English';
+        currentLang = 'km';
+      }
+    }
+
+    /* --------------------------------------------------------------------------
+       3. MOBILE MENU TOGGLE
+       -------------------------------------------------------------------------- */
+    function toggleMobileMenu() {
+      const navMenu = document.getElementById('navMenu');
+      navMenu.classList.toggle('open');
+    }
+
+    /* --------------------------------------------------------------------------
+       4. PHOTO MODAL LIGHTBOX SYSTEM
+       -------------------------------------------------------------------------- */
+    function openPhotoModal(imgUrl, titleKm, titleEn) {
+      const modal = document.getElementById('photoModal');
+      const modalImg = document.getElementById('modalImage');
+      const titleKmElem = document.getElementById('modalTitleKm');
+      const titleEnElem = document.getElementById('modalTitleEn');
+
+      modalImg.src = imgUrl;
+      titleKmElem.innerText = titleKm;
+      titleEnElem.innerText = titleEn;
+
+      modal.classList.add('active');
+    }
+
+    function closePhotoModal() {
+      document.getElementById('photoModal').classList.remove('active');
+    }
+
+    /* --------------------------------------------------------------------------
+       5. INTERACTIVE WISH WALL (NOTE ADDER)
+       -------------------------------------------------------------------------- */
+    function addMemoryNote(e) {
+      e.preventDefault();
+      const author = document.getElementById('noteAuthor').value;
+      const text = document.getElementById('noteText').value;
+      const wall = document.getElementById('notesWall');
+
+      if (!author || !text) return;
+
+      const newNote = document.createElement('div');
+      newNote.className = 'sticky-note';
+      newNote.style.animation = 'fadeIn 0.5s ease';
+      newNote.innerHTML = `
+        <div class="sticky-author">✍️ ${escapeHtml(author)}</div>
+        <div class="sticky-text">"${escapeHtml(text)}"</div>
+        <div class="sticky-date">Just Now</div>
+      `;
+
+      wall.prepend(newNote);
+
+      // Reset form
+      document.getElementById('noteForm').reset();
+    }
+
+    function escapeHtml(text) {
+      return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    /* --------------------------------------------------------------------------
+       6. AUDIO TOGGLE MOCKUP
+       -------------------------------------------------------------------------- */
+    let isAudioOn = true;
+    function toggleAudio() {
+      const btn = document.getElementById('audioBtn');
+      if (isAudioOn) {
+        btn.innerText = '🔇 Sound: OFF';
+        isAudioOn = false;
+      } else {
+        btn.innerText = '🔊 Sound: ON';
+        isAudioOn = true;
+      }
+    }
+
+    /* --------------------------------------------------------------------------
+       7. PARTICLE CANVAS ANIMATION BACKGROUND
+       -------------------------------------------------------------------------- */
+    const canvas = document.getElementById('particle-canvas');
+    const ctx = canvas.getContext('2d');
+    let particlesArray = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 3 + 1;
+        this.speedX = Math.random() * 1 - 0.5;
+        this.speedY = Math.random() * 1 - 0.5;
+        this.color = ['#ff6b6b', '#4ecdc4', '#ffe66d', '#6c5ce7'][Math.floor(Math.random() * 4)];
+      }
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+      }
+      draw() {
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function initParticles() {
+      particlesArray = [];
+      for (let i = 0; i < 45; i++) {
+        particlesArray.push(new Particle());
+      }
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = 0; i < particlesArray.length; i++) {
+        particlesArray[i].update();
+        particlesArray[i].draw();
+      }
+      requestAnimationFrame(animateParticles);
+    }
+
+    initParticles();
+    animateParticles();
+  </script>
+</body>
+</html>
